@@ -1,0 +1,59 @@
+{{- $appName := include "app.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $appName }}-deployment
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  namespace: {{ .Values.general.namespace | default $appName }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.deployment.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $appName }}-container
+          securityContext:
+            {{- toYaml .Values.deployment.securityContext | nindent 12 }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          ports:
+            - name: container-http
+              containerPort: {{ .Values.deployment.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.deployment.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.deployment.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
+          {{- with .Values.deployment.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.deployment.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
