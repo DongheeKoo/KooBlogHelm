@@ -1,0 +1,48 @@
+general:
+  nameOverride: ""
+  fullnameOverride: ""
+  namespace: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+deployment:
+  replicaCount: 1
+  podSecurityContext: {}
+  securityContext: {}
+  image:
+    repository: ""
+    pullPolicy: "IfNotPresent"
+    tag: ""
+  containerPort: 80
+  livenessProbe: {}
+  readinessProbe: {}
+  resources: {}
+  volumes: []
+  volumeMounts: []
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+service:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+  

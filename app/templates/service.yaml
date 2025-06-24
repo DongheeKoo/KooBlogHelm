@@ -1,0 +1,16 @@
+{{- $appName := include "app.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $appName }}-service
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  namespace: {{ .Values.general.namespace | default $appName }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- with .Values.service.ports }}
+  ports:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    {{- include "app.selectorLabels" . | nindent 4 }}

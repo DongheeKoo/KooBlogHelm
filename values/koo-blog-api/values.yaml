@@ -1,0 +1,54 @@
+general:
+  nameOverride: "koo-blog-api"
+  namespace: "koo-blog"
+
+serviceAccount:
+  create: false
+
+autoscaling:
+  enabled: false
+
+deployment:
+  replicaCount: 1
+  image:
+    repository: "koo-blog-api"
+    pullPolicy: "IfNotPresent"
+    tag: "latest"
+  containerPort: 8080
+  livenessProbe:
+    httpGet:
+      path: /hello
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /hello
+      port: http
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+service:
+  type: ClusterIP
+  ports:
+    - port: 443
+      targetPort: 8080
+      protocol: TCP
+
+ingress:
+  enabled: true
+  className: alb
+  annotations: {}
+  hosts:
+    - host: koo-blog.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: koo-blog-tls
+      hosts:
+        - koo-blog.com
+        
