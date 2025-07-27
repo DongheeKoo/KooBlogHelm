@@ -1,19 +1,16 @@
 general:
   nameOverride: "koo-blog-api"
   namespace: "koo-blog"
-
 serviceAccount:
   create: false
-
 autoscaling:
   enabled: false
-
 deployment:
   replicaCount: 1
   image:
     repository: "122976268003.dkr.ecr.ap-northeast-2.amazonaws.com/koo-blog-api"
     pullPolicy: "IfNotPresent"
-    tag: "94301ff"
+    tag: "5042b9e"
   containerPort: 8080
   livenessProbe:
     httpGet:
@@ -30,14 +27,12 @@ deployment:
     limits:
       cpu: 1000m
       memory: 1024Mi
-
 service:
   type: ClusterIP
   ports:
     - port: 80
       targetPort: 8080
       protocol: TCP
-
 ingress:
   enabled: true
   className: alb
@@ -55,4 +50,3 @@ ingress:
         - path: /
           pathType: Prefix
   tls: []
-        
