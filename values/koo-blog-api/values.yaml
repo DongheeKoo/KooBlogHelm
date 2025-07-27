@@ -10,7 +10,7 @@ deployment:
   image:
     repository: "122976268003.dkr.ecr.ap-northeast-2.amazonaws.com/koo-blog-api"
     pullPolicy: "IfNotPresent"
-    tag: "5042b9e"
+    tag: "0bc68f2"
   containerPort: 8080
   livenessProbe:
     httpGet:
